@@ -1,0 +1,82 @@
+generator client {
+    provider = "prisma-client-js"
+  }
+
+  datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+  }
+
+  model User {
+    id              Int          @id @default(autoincrement())
+    email           String       @unique
+    password        String
+    role            Role         @default(CLIENT)
+    name            String?
+    services        Service[]    @relation("ServiceProviders")
+    schedules       Schedule[]
+    reservations    Reservation[] @relation("ClientReservations")
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+  }
+
+  model Service {
+    id              Int          @id @default(autoincrement())
+    name            String
+    description     String?
+    duration        Int          // Duration in minutes
+    assignedProviders User[]     @relation("ServiceProviders")
+    reservations    Reservation[]
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+  }
+
+  model Cabinet {
+    id              Int          @id @default(autoincrement())
+    name            String
+    address         String?
+    schedules       Schedule[]
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+  }
+
+  model Schedule {
+    id              Int          @id @default(autoincrement())
+    providerId      Int
+    provider        User         @relation(fields: [providerId], references: [id])
+    cabinetId       Int?
+    cabinet         Cabinet?     @relation(fields: [cabinetId], references: [id])
+    date            DateTime
+    startTime       DateTime
+    endTime         DateTime
+    status          ScheduleStatus @default(AVAILABLE)
+    reservations    Reservation[]
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+  }
+
+  model Reservation {
+    id              Int          @id @default(autoincrement())
+    clientId        Int
+    client          User         @relation("ClientReservations", fields: [clientId], references: [id])
+    serviceId       Int
+    service         Service      @relation(fields: [serviceId], references: [id])
+    scheduleId      Int
+    schedule        Schedule     @relation(fields: [scheduleId], references: [id])
+    notes           String?
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+  }
+
+  enum Role {
+    ADMIN
+    PROVIDER
+    CLIENT
+  }
+
+  enum ScheduleStatus {
+    AVAILABLE
+    BOOKED
+    OFF
+    BREAK
+  }
