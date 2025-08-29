@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
