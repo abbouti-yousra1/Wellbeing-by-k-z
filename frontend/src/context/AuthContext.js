@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 export const AuthContext = createContext();
 
@@ -9,33 +9,31 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
+      try {
+        const decoded = jwtDecode(token);
+        console.log('Decoded user:', JSON.stringify(decoded, null, 2)); // Detailed debug
+        setUser(decoded);
+        localStorage.setItem('token', token);
+      } catch (err) {
+        console.error('Token decode error:', {
+          message: err.message,
+          stack: err.stack,
+        }); // Detailed debug
+        setUser(null);
+        setToken('');
+        localStorage.removeItem('token');
+      }
     }
   }, [token]);
 
-  const register = async (email, password, name, phone, dateOfBirth, gender) => {
-    try {
-      const response = await axios.post('http://localhost:5000/auth/register', {
-        email, password, name, phone, dateOfBirth, gender
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
-    }
-  };
-
-  const login = async (email, password) => {
-    try {
-      const response = await axios.post('http://localhost:5000/auth/login', { email, password });
-      setToken(response.data.token);
-      setUser(response.data.user);
-      localStorage.setItem('token', response.data.token);
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
-    }
+  const login = (newToken, newUser) => {
+    console.log('Login called with:', {
+      token: newToken,
+      user: JSON.stringify(newUser, null, 2),
+    }); // Detailed debug
+    setToken(newToken);
+    setUser(newUser);
+    localStorage.setItem('token', newToken);
   };
 
   const logout = () => {
@@ -45,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, register, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

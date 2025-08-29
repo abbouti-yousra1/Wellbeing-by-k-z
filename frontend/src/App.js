@@ -1,53 +1,36 @@
-import React, { useContext, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext, AuthProvider } from './context/AuthContext';
-import Register from './components/auth/Register';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Login from './components/auth/Login';
+import Register from './components/auth/Register';
 import ClientDashboard from './components/client/Dashboard';
 import AdminDashboard from './components/admin/Dashboard';
+import Users from './components/admin/Users';
+import Services from './components/admin/Services';
+import Cabinets from './components/admin/Cabinets';
+import Providers from './components/admin/Providers';
+import Schedules from './components/admin/Schedules';
 
-const App = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const location = useLocation(); // Get current route
-
-  useEffect(() => {
-    // Allow /login and /register for unauthenticated users
-    if (!user && !['/login', '/register'].includes(location.pathname)) {
-      navigate('/');
-    } else if (user) {
-      if (user.role === 'ADMIN') navigate('/admin/dashboard');
-      else if (user.role === 'CLIENT') navigate('/client/dashboard');
-    }
-  }, [user, navigate, location.pathname]);
-
+function App() {
   return (
-    <div>
-      <nav>
-        <Link to="/">Home</Link> | 
-        {!user && <Link to="/register">Register</Link>} | 
-        {!user && <Link to="/login">Login</Link>} | 
-        {user && <button onClick={logout}>Logout</button>}
-      </nav>
-      <h1>Wellbeing Reservations</h1>
-      {user && <p>Welcome, {user.name} ({user.role})</p>}
-      <Routes>
-        <Route path="/" element={<h2>Home Page</h2>} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/client/dashboard" element={<ClientDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      </Routes>
-    </div>
-  );
-};
-
-const AppWrapper = () => (
-  <Router>
     <AuthProvider>
-      <App />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/client/dashboard" element={<ClientDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />}>
+            <Route path="users" element={<Users />} />
+            <Route path="services" element={<Services />} />
+            <Route path="cabinets" element={<Cabinets />} />
+            <Route path="providers" element={<Providers />} />
+            <Route path="schedules" element={<Schedules />} />
+          </Route>
+          <Route path="/" element={<Login />} />
+        </Routes>
+      </Router>
     </AuthProvider>
-  </Router>
-);
+  );
+}
 
-export default AppWrapper;
+export default App;
