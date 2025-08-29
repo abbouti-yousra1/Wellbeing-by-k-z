@@ -378,4 +378,5 @@ router.delete('/schedules/:id', requireAuth, requireRole(['ADMIN']), async (req,
   }
 });
 
+
 module.exports = router;

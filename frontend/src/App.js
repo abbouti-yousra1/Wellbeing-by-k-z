@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import Home from './components/public/Home';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import ClientDashboard from './components/client/Dashboard';
@@ -16,6 +17,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/client/dashboard" element={<ClientDashboard />} />
@@ -26,7 +28,6 @@ function App() {
             <Route path="providers" element={<Providers />} />
             <Route path="schedules" element={<Schedules />} />
           </Route>
-          <Route path="/" element={<Login />} />
         </Routes>
       </Router>
     </AuthProvider>

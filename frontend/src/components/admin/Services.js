@@ -8,7 +8,6 @@ const Services = () => {
   const [editingService, setEditingService] = useState(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-  // Fetch services
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -23,17 +22,14 @@ const Services = () => {
     fetchServices();
   }, []);
 
-  // Handle form submission (create or update)
   const onSubmit = async (data) => {
     try {
       if (editingService) {
-        // Update service
         const response = await axios.put(`http://localhost:5000/admin/services/${editingService.id}`, data, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setServices(services.map((s) => (s.id === editingService.id ? response.data.service : s)));
       } else {
-        // Create service
         const response = await axios.post('http://localhost:5000/admin/services', data, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
@@ -46,13 +42,11 @@ const Services = () => {
     }
   };
 
-  // Handle edit button
   const handleEdit = (service) => {
     setEditingService(service);
     reset(service);
   };
 
-  // Handle delete
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/admin/services/${id}`, {
@@ -69,13 +63,13 @@ const Services = () => {
       <h2 style={styles.title}>Manage Services</h2>
       {error && <p style={styles.error}>{error}</p>}
 
-      {/* Service Form */}
       <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
         <div style={styles.formGroup}>
           <label style={styles.label}>Name</label>
           <input
             {...register('name', { required: 'Name is required' })}
             style={styles.input}
+            placeholder="Enter service name"
           />
           {errors.name && <p style={styles.error}>{errors.name.message}</p>}
         </div>
@@ -84,6 +78,7 @@ const Services = () => {
           <textarea
             {...register('description')}
             style={styles.textarea}
+            placeholder="Enter service description"
           />
         </div>
         <div style={styles.formGroup}>
@@ -92,6 +87,7 @@ const Services = () => {
             type="number"
             {...register('duration', { required: 'Duration is required', min: 1 })}
             style={styles.input}
+            placeholder="Enter duration"
           />
           {errors.duration && <p style={styles.error}>{errors.duration.message}</p>}
         </div>
@@ -102,6 +98,7 @@ const Services = () => {
             step="0.01"
             {...register('price')}
             style={styles.input}
+            placeholder="Enter price"
           />
         </div>
         <div style={styles.formGroup}>
@@ -109,23 +106,25 @@ const Services = () => {
           <input
             {...register('imageUrl')}
             style={styles.input}
+            placeholder="Enter image URL"
           />
         </div>
-        <button type="submit" style={styles.submitButton}>
-          {editingService ? 'Update Service' : 'Create Service'}
-        </button>
-        {editingService && (
-          <button
-            type="button"
-            onClick={() => { reset(); setEditingService(null); }}
-            style={styles.cancelButton}
-          >
-            Cancel
+        <div style={styles.buttonGroup}>
+          <button type="submit" style={styles.submitButton}>
+            {editingService ? 'Update Service' : 'Create Service'}
           </button>
-        )}
+          {editingService && (
+            <button
+              type="button"
+              onClick={() => { reset(); setEditingService(null); }}
+              style={styles.cancelButton}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </form>
 
-      {/* Services Table */}
       <table style={styles.table}>
         <thead>
           <tr style={styles.tableHeader}>
@@ -165,95 +164,132 @@ const Services = () => {
 
 const styles = {
   container: {
-    padding: '20px',
+    padding: '24px',
+    backgroundColor: '#f1f5f9',
+    minHeight: '100vh',
+    fontFamily: "'Inter', Arial, sans-serif",
   },
   title: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
+    fontSize: '28px',
+    fontWeight: '700',
+    color: '#1e3a8a',
+    marginBottom: '24px',
   },
   error: {
-    color: 'red',
-    marginBottom: '10px',
+    color: '#dc2626',
+    fontSize: '14px',
+    marginBottom: '16px',
   },
   form: {
-    backgroundColor: '#f9f9f9',
-    padding: '20px',
+    backgroundColor: '#fff',
+    padding: '24px',
     borderRadius: '8px',
-    marginBottom: '20px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    marginBottom: '32px',
+    maxWidth: '600px',
   },
   formGroup: {
-    marginBottom: '15px',
+    marginBottom: '20px',
   },
   label: {
     display: 'block',
     fontSize: '14px',
-    marginBottom: '5px',
+    fontWeight: '500',
+    color: '#4b5563',
+    marginBottom: '8px',
   },
   input: {
     width: '100%',
-    padding: '8px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
+    padding: '10px',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    fontSize: '14px',
+    transition: 'border-color 0.3s',
   },
   textarea: {
     width: '100%',
-    padding: '8px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    minHeight: '100px',
+    padding: '10px',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    fontSize: '14px',
+    minHeight: '120px',
+    resize: 'vertical',
+    transition: 'border-color 0.3s',
+  },
+  buttonGroup: {
+    display: 'flex',
+    gap: '12px',
   },
   submitButton: {
-    padding: '10px 20px',
-    backgroundColor: '#3b82f6',
+    padding: '10px 24px',
+    backgroundColor: '#1e3a8a',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
+    fontSize: '14px',
+    fontWeight: '500',
     cursor: 'pointer',
+    transition: 'background-color 0.3s',
   },
   cancelButton: {
-    padding: '10px 20px',
+    padding: '10px 24px',
     backgroundColor: '#6b7280',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
-    marginLeft: '10px',
+    borderRadius: '6px',
+    fontSize: '14px',
+    fontWeight: '500',
     cursor: 'pointer',
+    transition: 'background-color 0.3s',
   },
   table: {
     width: '100%',
     borderCollapse: 'collapse',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    overflow: 'hidden',
   },
   tableHeader: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#f8fafc',
   },
   th: {
-    padding: '10px',
+    padding: '16px',
     textAlign: 'left',
-    borderBottom: '1px solid #ccc',
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#1e3a8a',
+    borderBottom: '1px solid #e5e7eb',
   },
   tr: {
-    borderBottom: '1px solid #ccc',
+    borderBottom: '1px solid #e5e7eb',
+    transition: 'background-color 0.3s',
   },
   td: {
-    padding: '10px',
+    padding: '16px',
+    fontSize: '14px',
+    color: '#4b5563',
   },
   editButton: {
-    padding: '5px 10px',
+    padding: '8px 16px',
     backgroundColor: '#f59e0b',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
-    marginRight: '5px',
+    borderRadius: '6px',
+    fontSize: '14px',
     cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    marginRight: '8px',
   },
   deleteButton: {
-    padding: '5px 10px',
-    backgroundColor: '#ef4444',
+    padding: '8px 16px',
+    backgroundColor: '#dc2626',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
+    fontSize: '14px',
     cursor: 'pointer',
+    transition: 'background-color 0.3s',
   },
 };
 
