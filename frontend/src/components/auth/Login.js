@@ -10,10 +10,6 @@ interface User {
   name?: string;
 }
 
-interface LoginResponse {
-  token: string;
-  user: User;
-}
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -25,7 +21,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post<LoginResponse>('http://localhost:5000/auth/login', {
+      const response = await axios.post('http://localhost:5000/auth/login', {
         email,
         password,
       });
