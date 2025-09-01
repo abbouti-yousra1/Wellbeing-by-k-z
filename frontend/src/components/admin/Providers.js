@@ -1,7 +1,208 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import { Colors } from '../../constants/Colors.ts';
 
-const Providers = () => {
-  return <div>Providers Management (To be implemented)</div>;
+const ProvidersList = () => {
+  const { token } = useContext(AuthContext);
+  const [providers, setProviders] = useState([]);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios.get('http://localhost:5000/admin/providers', { headers });
+        setProviders(response.data);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Failed to fetch providers');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProviders();
+  }, [token]);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this provider?')) return;
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.delete(`http://localhost:5000/admin/providers/${id}`, { headers });
+      setProviders(providers.filter((p) => p.id !== id));
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to delete provider');
+    }
+  };
+
+  if (isLoading) {
+    return <div style={styles.loading}>Loading...</div>;
+  }
+
+  return (
+    <div style={styles.container}>
+      <h2 style={styles.title}>Manage Providers</h2>
+      {error && <p style={styles.error}>{error}</p>}
+      <button style={styles.submitButton} onClick={() => navigate('/admin/providers/create')} className="submit-button">
+        Create New Provider
+      </button>
+
+      <div style={styles.providerGrid}>
+        {providers.map((provider) => (
+          <div key={provider.id} style={styles.card} className="card">
+            <h3 style={styles.cardTitle}>{provider.name}</h3>
+            <p style={styles.cardText}>
+              <strong>Email:</strong> {provider.email}
+            </p>
+            <p style={styles.cardText}>
+              <strong>Phone:</strong> {provider.phone || 'Not specified'}
+            </p>
+            <p style={styles.cardText}>
+              <strong>Services:</strong>
+              {provider.services.length > 0 ? (
+                <ul style={styles.serviceList}>
+                  {provider.services.map((service) => (
+                    <li key={service.id} style={styles.serviceItem}>
+                      {service.name}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                ' No services assigned'
+              )}
+            </p>
+            <div style={styles.buttonGroup}>
+              <button
+                onClick={() => navigate(`/admin/providers/${provider.id}/edit`)}
+                style={styles.editButton}
+                className="edit-button"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(provider.id)}
+                style={styles.deleteButton}
+                className="delete-button"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
-export default Providers;
+const styles = {
+  container: {
+    padding: '24px',
+    backgroundColor: 'rgba(255, 255, 255, 0.55)',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+    maxWidth: '1200px',
+    margin: '0 auto',
+  },
+  title: {
+    fontFamily: "'Lora', Georgia, serif",
+    fontSize: '32px',
+    fontWeight: '700',
+    color: Colors.vibrantPlum,
+    marginBottom: '24px',
+  },
+  error: {
+    color: '#dc2626',
+    fontSize: '14px',
+    marginBottom: '16px',
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+  },
+  submitButton: {
+    padding: '10px 24px',
+    backgroundColor: Colors.vibrantPlum,
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+    transition: 'background-color 0.3s, transform 0.2s',
+    marginBottom: '24px',
+  },
+  providerGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: '24px',
+  },
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s, box-shadow 0.3s',
+  },
+  cardTitle: {
+    fontFamily: "'Lora', Georgia, serif",
+    fontSize: '24px',
+    fontWeight: '600',
+    color: Colors.vibrantPlum,
+    marginBottom: '16px',
+  },
+  cardText: {
+    fontSize: '14px',
+    color: Colors.textSecondary,
+    marginBottom: '12px',
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+  },
+  serviceList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: '8px 0 0 0',
+  },
+  serviceItem: {
+    fontSize: '14px',
+    color: Colors.textSecondary,
+    marginBottom: '4px',
+  },
+  buttonGroup: {
+    display: 'flex',
+    gap: '12px',
+    justifyContent: 'flex-end',
+  },
+  editButton: {
+    padding: '8px 16px',
+    backgroundColor: Colors.vibrantPlum,
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+    transition: 'background-color 0.3s, transform 0.2s',
+  },
+  deleteButton: {
+    padding: '8px 16px',
+    backgroundColor: '#dc2626',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+    transition: 'background-color 0.3s, transform 0.2s',
+  },
+  loading: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontSize: '20px',
+    color: Colors.textSecondary,
+    fontFamily: "'Inter', -apple-system, Arial, sans-serif",
+  },
+};
+
+export default ProvidersList;
