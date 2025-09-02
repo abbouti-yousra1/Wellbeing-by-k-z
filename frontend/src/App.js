@@ -18,6 +18,8 @@ import CabinetCreate from './components/admin/CabinetCreate';
 import CabinetEdit from './components/admin/CabinetEdit';
 import ProviderCreate from './components/admin/ProviderCreate';
 import ProviderEdit from './components/admin/ProviderEdit';
+import ScheduleCreate from './components/admin/ScheduleCreate';
+import ScheduleEdit from './components/admin/ScheduleEdit';
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
             <Route path="providers/:id/edit" element={<ProviderEdit />} />
             <Route path="providers/create" element={<ProviderCreate />} />
             <Route path="schedules" element={<Schedules />} />
+            <Route path="schedules/:id/edit" element={<ScheduleEdit />} />
+            <Route path="schedules/create" element={<ScheduleCreate />} />
           </Route>
         </Routes>
       </Router>
