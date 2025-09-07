@@ -260,7 +260,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'rgba(6, 6, 6, 0)',
     zIndex: 0,
   },
   sidebar: {
