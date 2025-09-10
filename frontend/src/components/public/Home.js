@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import {Colors} from '../../constants/Colors.ts';
 const Home = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState('');
@@ -35,6 +35,7 @@ const Home = () => {
           <h1 style={styles.heroTitle}>Welcome to Wellbeing by K-Z</h1>
           <p style={styles.heroSubtitle}>Discover rejuvenating wellness sessions tailored for you</p>
           <a href="/register" style={styles.heroButton}>Book Now</a>
+           <a href="/login" style={styles.heroButton}>Log In</a>
         </div>
       </section>
 
@@ -113,8 +114,8 @@ const Home = () => {
 const styles = {
   container: {
     fontFamily: "'Inter', Arial, sans-serif",
-    backgroundColor: '#FAF9EE',
-    color: '#A2AF9B',
+    backgroundColor: Colors.softLavender, // Changed to soft pinkish-lavender for a subtle pink base
+    color: Colors.textPrimary, // Updated to use defined text color
   },
   hero: {
     backgroundImage: 'url(/images/hero-bg.jpg)',
@@ -128,11 +129,11 @@ const styles = {
     boxShadow: 'inset 0 0 100px rgba(0,0,0,0.1)',
   },
   heroContent: {
-    backgroundColor: 'rgba(240, 237, 237, 0.6)',
+    backgroundColor: 'rgba(236, 213, 229, 0.6)', // Adjusted to softLavender with opacity for pinkish blur
     padding: '40px',
     borderRadius: '12px',
     boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
-    backdropFilter: 'blur(30px)', // Blurred white thing in the middle
+    backdropFilter: 'blur(30px)',
   },
   logo: {
     width: '150px',
@@ -141,19 +142,20 @@ const styles = {
   heroTitle: {
     fontSize: '48px',
     fontWeight: '700',
-    color: '#A2AF9B',
+    color: Colors.deepPurple, // Changed to deepPurple for a bold pinkish-purple contrast
     marginBottom: '16px',
   },
   heroSubtitle: {
     fontSize: '20px',
-    color: '#4c4c4bff',
+    color: Colors.textSecondary, // Updated to secondary text color
     marginBottom: '24px',
   },
   heroButton: {
     display: 'inline-block',
+    margin: '0 8px',
     padding: '12px 32px',
-    backgroundColor: '#A2AF9B',
-    color: '#FAF9EE',
+    backgroundColor: Colors.vibrantPlum, // Changed to vibrantPlum for a pinkish button
+    color: '#FFFFFF', // White for better contrast
     textDecoration: 'none',
     borderRadius: '8px',
     fontSize: '16px',
@@ -164,17 +166,18 @@ const styles = {
     padding: '64px 24px',
     maxWidth: '1200px',
     margin: '0 auto',
+    backgroundColor: Colors.lightBg, // Light background for sections
   },
   sectionTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#A2AF9B',
+    color: Colors.deepPurple, // Changed to deepPurple for pinkish-purple headings
     textAlign: 'center',
     marginBottom: '40px',
   },
   sectionText: {
     fontSize: '18px',
-    color: '#827a71ff',
+    color: Colors.textSecondary, // Updated to secondary text color
     textAlign: 'center',
     maxWidth: '800px',
     margin: '0 auto 24px',
@@ -191,9 +194,9 @@ const styles = {
     gap: '24px',
   },
   serviceCard: {
-    backgroundColor: '#EEEEEE',
+    backgroundColor: '#FFFFFF', // Kept white for contrast, but can use softLavender if desired
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    boxShadow: `0 4px 12px ${Colors.lightGrey}`, // Updated with lightGrey for shadow
     overflow: 'hidden',
     transition: 'transform 0.3s',
   },
@@ -205,12 +208,12 @@ const styles = {
   serviceTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#A2AF9B',
+    color: Colors.vibrantPlum, // Changed to vibrantPlum for pinkish titles
     padding: '16px 24px 8px',
   },
   serviceDescription: {
     fontSize: '16px',
-    color: '#DCCFC0',
+    color: Colors.textSecondary, // Updated to secondary text color
     padding: '0 24px 16px',
   },
   pricing: {
@@ -218,15 +221,15 @@ const styles = {
   },
   priceItem: {
     fontSize: '16px',
-    color: '#A2AF9B',
+    color: Colors.textPrimary, // Kept primary text for readability
     margin: '4px 0',
   },
   serviceButton: {
     display: 'block',
     textAlign: 'center',
     padding: '12px',
-    backgroundColor: '#A2AF9B',
-    color: '#FAF9EE',
+    backgroundColor: Colors.vibrantPlum, // Changed to vibrantPlum for pinkish buttons
+    color: '#FFFFFF', // White for contrast
     textDecoration: 'none',
     borderRadius: '8px',
     fontSize: '16px',
@@ -255,24 +258,24 @@ const styles = {
     height: '250px',
     objectFit: 'cover',
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    boxShadow: `0 4px 12px ${Colors.lightGrey}`, // Updated with lightGrey
   },
   contactInfo: {
     textAlign: 'center',
   },
   contactItem: {
     fontSize: '16px',
-    color: '#464645ff',
+    color: Colors.textPrimary, // Updated to primary text color
     margin: '8px 0',
   },
   contactLink: {
-    color: '#A2AF9B',
+    color: Colors.vibrantPlum, // Changed to vibrantPlum for pinkish links
     textDecoration: 'none',
     fontWeight: '500',
   },
   footer: {
-    backgroundColor: '#A2AF9B',
-    color: '#FAF9EE',
+    backgroundColor: Colors.deepPurple, // Changed to deepPurple for a bold pinkish-purple footer
+    color: '#FFFFFF', // White for contrast
     padding: '24px',
     textAlign: 'center',
     fontSize: '14px',
@@ -286,11 +289,10 @@ const styles = {
     gap: '16px',
   },
   footerLink: {
-    color: '#FAF9EE',
+    color: '#FFFFFF', // White for contrast
     textDecoration: 'none',
     fontWeight: '500',
     transition: 'color 0.3s',
   },
 };
-
 export default Home;
